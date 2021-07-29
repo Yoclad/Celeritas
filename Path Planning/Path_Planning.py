@@ -19,6 +19,10 @@ dest = 1
 kp_yaw = 1
 kp_fwd = 2
 
+obstacle_aruco = 7  # the id of an ArUco marker representing an obstacle
+node_aruco = 9  # the id of an ArUco marker representing a node
+# these can be changed later
+
 current = G.nodes[now]  # this will be the starting node
 neighbor = G.nodes[dest]  # next node
 
@@ -34,15 +38,20 @@ while True:
     while slope > 0.3:
         myTello.send_rc_control(0, 0, 0, -kp_yaw)
         kp_yaw /= 1.5
-    if abs(slope) < 0.3:
+    if abs(slope) < 0.3:    # if we're on course
         myTello.get_frame_read()
         img = myTello.background_frame_read.frame
         dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_5X5_250)
         pars = cv2.aruco.DetectorParameters_create()
         corners, ids, unused = cv2.aruco.detectMarkers(img, dictionary, parameters=pars)
-        if len(corners) == 0:
+        if len(corners) == 0:   # if no marker has been detected
             myTello.send_rc_control(0, kp_fwd, 0, 0)
-        else:
+        elif ids == obstacle_aruco:
+            # we've arrived at an obstacle
+            myTello.move_right(3)
+            myTello.move_forward(3)
+            myTello.move_left(3)
+        elif ids == node_aruco:
             # we've arrived at neighbor
             if len(G.neighbors(current)) == 0:
                 myTello.land()  # no neighbors means we're at the end of the course
