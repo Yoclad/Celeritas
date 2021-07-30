@@ -23,7 +23,8 @@ traj = np.zeros((600, 600, 3), dtype=np.uint8)
 cam = PinholeCamera(960.0, 720.0, 921.170702, 919.018377, 459.904354, 351.238301, k1=-0.033458, k2=0.105152,
                     p1=0.001256, p2=-0.006647, k3=0.000000)
 vo = VisualOdometry(cam)
-
+obstacle_aruco = 7
+marker_aruco = 9
 
 # Course Mapping Function
 def mapping(img):  # will map desired course
@@ -58,13 +59,13 @@ while True:
         marker1 = mk.Marker(marker_corners[0], marker_ids[0])
         image = cv2.aruco.drawDetectedMarkers(image, marker_corners, marker_ids)  # draws ID and corners
         cv2.circle(image, (marker1.centroid_X, marker1.centroid_Y), 3, (0, 255, 0), cv2.FILLED)  # draws centroid
-
+        if marker_ids == obstacle_aruco: # an obstacle has been detected
+            myTello.move_right(10)
+            myTello.move_forward(10)
+            myTello.move_left(10)
+            
     course_cords_x, course_cords_y = mapping(image)  # retrieves marker coordinates
 
-    '''for i, k in course_cords_x, course_cords_y:  # iterates through marker coordinates
-        if i or k > len(course_cords_x)-1:
-            i = 0
-            k = 0'''
     i = 0
     while i <= len(course_cords_y)-1:
         slope = ((course_cords_y[i+1] - course_cords_y[i]) / (course_cords_x[i+1] - course_cords_x[i]))
@@ -81,5 +82,3 @@ while True:
             i = 0
     cv2.imshow("output", image)
     cv2.waitKey(1)
-
-
