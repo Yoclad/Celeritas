@@ -61,8 +61,13 @@ while True:
 
     course_cords_x, course_cords_y = mapping(image)  # retrieves marker coordinates
 
-    for i, k in course_cords_x, course_cords_y:  # iterates through marker coordinates
-        slope = ((course_cords_y[k+1] - course_cords_y[k]) / (course_cords_x[i+1] - course_cords_x[i]))
+    '''for i, k in course_cords_x, course_cords_y:  # iterates through marker coordinates
+        if i or k > len(course_cords_x)-1:
+            i = 0
+            k = 0'''
+    i = 0
+    while i <= len(course_cords_y)-1:
+        slope = ((course_cords_y[i+1] - course_cords_y[i]) / (course_cords_x[i+1] - course_cords_x[i]))
         while slope < -0.3:  # PID to navigate between markers
             myTello.send_rc_control(0, 0, 0, kp_yaw)
             kp_yaw /= 1.5
@@ -71,7 +76,9 @@ while True:
             kp_yaw /= 1.5
         if abs(slope) < 0.3:
             myTello.send_rc_control(0, kp_fwd, 0, 0)
-
+        i += 1
+        if i == len(course_cords_y)-1:  # if the end of the course is reached begin another lap
+            i = 0
     cv2.imshow("output", image)
     cv2.waitKey(1)
 
