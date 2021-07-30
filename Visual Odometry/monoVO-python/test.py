@@ -41,8 +41,7 @@ while True:
         cv2.waitKey(1)
         img_id += 1
     except Exception as e:
-        #print(traceback.print_exc())
+        # print(traceback.print_exc())
         pass
-
 
 cv2.imwrite('map.png', traj)

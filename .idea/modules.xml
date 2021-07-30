@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Celeritas.iml" filepath="$PROJECT_DIR$/.idea/Celeritas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../djitello/.idea/djitello.iml" filepath="$PROJECT_DIR$/../../djitello/.idea/djitello.iml" />
     </modules>
   </component>
 </project>
