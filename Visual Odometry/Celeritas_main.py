@@ -32,6 +32,7 @@ def mapping(img):  # will map desired course
     course_cords_x = {}
     course_cords_y = {}
     while True:
+        n = 0
         img_id = 0
         if img is None:  # if empty frame is returned by the camera it will be skipped
             continue
@@ -41,9 +42,10 @@ def mapping(img):  # will map desired course
             x, y, z = cur_t[0], cur_t[1], cur_t[2]  # returns coordinates from visual odometry code
             current_cords = [x, y, z]
             if marker_corners and marker1.avg_side_length < 500:  # if marker is detected coordinates are stored
-                course_cords_x[marker_ids] = current_cords[0]
-                course_cords_y[marker_ids] = current_cords[1]
+                course_cords_x[n] = current_cords[0]
+                course_cords_y[n] = current_cords[1]
                 print("Coordinates for Marker ID: " + str(marker_ids) + " have been logged!")  # logging confirmation
+                n += 1
             elif marker_corners and not marker1.avg_side_length < 500:
                 print("Marker ID: " + str(marker_ids) + " is not close enough!")
         else:
@@ -65,7 +67,7 @@ def mapping(img):  # will map desired course
 
 # Main Loop
 while True:
-    key = cv2.waitKey(1)  # K for Kill switch
+    key = cv2.waitKey(1)  # K for kill switch
     if key == ord('k'):
         myTello.land()
 
