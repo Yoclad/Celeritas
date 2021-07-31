@@ -5,8 +5,8 @@
 # Imports
 import numpy as np
 import djitellopy as tello
-from visual_odometry import PinholeCamera, VisualOdometry
 import cv2.aruco
+from visual_odometry import PinholeCamera, VisualOdometry
 import Marker2 as mk
 
 # Initialization
