@@ -44,4 +44,4 @@ while True:
         # print(traceback.print_exc())
         pass
 
-cv2.imwrite('map.png', traj)
+cv2.imwrite('coursemap.png', traj)

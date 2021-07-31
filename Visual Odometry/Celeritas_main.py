@@ -48,6 +48,15 @@ def mapping(img):  # will map desired course
                 print("Marker ID: " + str(marker_ids) + " is not close enough!")
         else:
             x, y, z = 0., 0., 0.
+
+        draw_x, draw_y = int(x) + 290, int(z) + 90  # displays plotted course
+        cv2.circle(traj, (draw_x, draw_y), 1, (img_id * 255 / 4540, 255 - img_id * 255 / 4540, 0), 1)
+        cv2.rectangle(traj, (10, 20), (600, 60), (0, 0, 0), -1)
+        text = "Coordinates: x=%2fm y=%2fm z=%2fm" % (x, y, z)
+        cv2.putText(traj, text, (20, 40), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1, 8)
+        cv2.waitKey(1)
+        if marker_ids == 24:  # end checkpoint
+            break
         img_id += 1
 
     cv2.imwrite('coursemap.png', traj)
@@ -69,7 +78,8 @@ while True:
         cv2.circle(image, (marker1.centroid_X, marker1.centroid_Y), 3, (0, 255, 0), cv2.FILLED)  # draws centroid
 
     course_cords_x, course_cords_y = mapping(image)  # retrieves marker coordinates
-
+    lap_count = 3
+    laps_done = 0
     i = 0
     while i <= len(course_cords_y) - 1:
         if i == len(course_cords_y) - 1:  # if the end of the course is reached begin another lap
@@ -92,5 +102,9 @@ while True:
         i += 1
         if i == len(course_cords_y) - 1:  # if the end of the course is reached begin another lap
             i = 0
+            laps_done += 1
+            if laps_done == lap_count:
+                myTello.land()
+                print("Course complete, after " + str(laps_done) + " laps!")
     cv2.imshow("output", image)
     cv2.waitKey(1)
