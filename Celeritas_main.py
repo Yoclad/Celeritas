@@ -6,7 +6,6 @@
 import numpy as np
 import djitellopy as tello
 from visual_odometry import PinholeCamera, VisualOdometry
-import cv2
 import cv2.aruco
 import Marker2 as mk
 
