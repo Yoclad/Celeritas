@@ -4,7 +4,7 @@ import cv2
 STAGE_FIRST_FRAME = 0
 STAGE_SECOND_FRAME = 1
 STAGE_DEFAULT_FRAME = 2
-kMinNumFeature = 1500
+kMinNumFeature = 1000
 
 lk_params = dict(winSize=(21, 21),
                  # maxLevel = 3,
@@ -77,8 +77,8 @@ class VisualOdometry:
             img3 = cv2.drawKeypoints(self.new_frame, self.px_cur, None, color=(255, 0, 0))
             cv2.imshow('Features', img3)
         #[print(type(x)) for x in self.px_cur]
-        self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
-        self.px_ref = self.px_cur
+            self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
+            self.px_ref = self.px_cur
 
     def update(self, img, frame_id):
         assert (img.ndim == 2 and img.shape[0] == self.cam.height and img.shape[

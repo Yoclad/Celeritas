@@ -33,13 +33,13 @@ mapping_done = False
 def mapping(img):  # will map desired course
     course_cords_x = {}
     course_cords_y = {}
+    img_id = 0
     while True:
         try:
             n = 0
-            img_id = 0
             if img is None:  # if empty frame is returned by the camera it will be skipped
                 print("frame dropped")
-                pass
+                continue
             vo.update(img, img_id)
             cur_t = vo.cur_t
             if img_id > 2:
