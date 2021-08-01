@@ -45,9 +45,9 @@ class VisualOdometry:
         self.px_cur = None
         self.focal = cam.fx
         self.pp = (cam.cx, cam.cy)
-        self.detector = cv2.FastFeatureDetector_create(threshold=10, nonmaxSuppression=True)
+        self.detector = cv2.FastFeatureDetector_create(threshold=15, nonmaxSuppression=True)
 
-    def getAbsoluteScale(self, frame_id):  # specialized for KITTI odometry dataset
+    def getAbsoluteScale(self, frame_id):
         return 1
 
     def processFirstFrame(self):
@@ -65,6 +65,7 @@ class VisualOdometry:
 
     def processFrame(self, frame_id):
         self.px_ref, self.px_cur = featureTracking(self.last_frame, self.new_frame, self.px_ref)
+        print(len(self.px_cur))
         E, mask = cv2.findEssentialMat(self.px_cur, self.px_ref, focal=self.focal, pp=self.pp, method=cv2.RANSAC,
                                        prob=0.999, threshold=1.0)
         _, R, t, mask = cv2.recoverPose(E, self.px_cur, self.px_ref, focal=self.focal, pp=self.pp)
@@ -76,13 +77,12 @@ class VisualOdometry:
             self.px_cur = self.detector.detect(self.new_frame)
             img3 = cv2.drawKeypoints(self.new_frame, self.px_cur, None, color=(255, 0, 0))
             cv2.imshow('Features', img3)
-        #[print(type(x)) for x in self.px_cur]
             self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
             self.px_ref = self.px_cur
 
     def update(self, img, frame_id):
         assert (img.ndim == 2 and img.shape[0] == self.cam.height and img.shape[
-            1] == self.cam.width), "Frame: provided image has not the same size as the camera model or image is not " \
+1] == self.cam.width), "Frame: provided image has not the same size as the camera model or image is not " \
                                    "grayscale "
         self.new_frame = img
         if self.frame_stage == STAGE_DEFAULT_FRAME:
