@@ -13,7 +13,6 @@ lk_params = dict(winSize=(21, 21),
 
 def featureTracking(image_ref, image_cur, px_ref):
     kp2, st, err = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, px_ref, None, **lk_params)  # shape: [k,2] [k,1] [k,1]
-    print(st)
     st = st.reshape(st.shape[0])
     kp1 = px_ref[st == 1]
     kp2 = kp2[st == 1]
@@ -77,6 +76,7 @@ class VisualOdometry:
             self.px_cur = self.detector.detect(self.new_frame)
             img3 = cv2.drawKeypoints(self.new_frame, self.px_cur, None, color=(255, 0, 0))
             cv2.imshow('Features', img3)
+        #[print(type(x)) for x in self.px_cur]
         self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
         self.px_ref = self.px_cur
 
